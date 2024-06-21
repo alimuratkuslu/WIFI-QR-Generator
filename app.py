@@ -25,15 +25,16 @@ def get_wifi_networks():
         networks = subprocess.check_output(["netsh", "wlan", "show", "network"])
         networks = networks.decode("ascii") 
         networks = networks.replace("\r","")
-        ls = networks.split("\n")
-        ls = ls[4:]
+
+        lines = networks.split("\n")
         ssids = []
-        x = 0
-        while x < len(ls):
-            if x % 5 == 0:
-                ssids.append(ls[x])
-            x += 1
-        print(ssids)
+        
+        for line in lines:
+            if "SSID" in line:
+                ssid = line.split(":")[1].strip()
+                if ssid:
+                    ssids.append(ssid)
+
         return ssids
     else: 
         networks = None
