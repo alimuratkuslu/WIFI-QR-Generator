@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 import qrcode
 import io
 import base64
+import subprocess
 import platform
 
 app = Flask(__name__)
@@ -21,7 +22,19 @@ def create_wifi_qr(ssid, password, encryption):
 
 def get_wifi_networks():
     if platform.system() == 'Windows':
-        networks = ['Network 1', 'Network 2', 'Network 3']
+        networks = subprocess.check_output(["netsh", "wlan", "show", "network"])
+        networks = networks.decode("ascii") 
+        networks = networks.replace("\r","")
+        ls = networks.split("\n")
+        ls = ls[4:]
+        ssids = []
+        x = 0
+        while x < len(ls):
+            if x % 5 == 0:
+                ssids.append(ls[x])
+            x += 1
+        print(ssids)
+        return ssids
     else: 
         networks = None
     return networks
