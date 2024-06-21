@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 import qrcode
 import io
 import base64
+import platform
 
 app = Flask(__name__)
 
@@ -18,9 +19,17 @@ def create_wifi_qr(ssid, password, encryption):
     img = qr.make_image(fill='black', back_color='white')
     return img
 
+def get_wifi_networks():
+    if platform.system() == 'Windows':
+        networks = ['Network 1', 'Network 2', 'Network 3']
+    else: 
+        networks = None
+    return networks
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     qr_code_data = None
+    networks = get_wifi_networks()
     if request.method == 'POST':
         ssid = request.form['ssid']
         password = request.form['password']
@@ -31,7 +40,7 @@ def index():
         buffer.seek(0)
         img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
         qr_code_data = f"data:image/png;base64,{img_base64}"
-    return render_template('index.html', qr_code_data=qr_code_data)
+    return render_template('index.html', qr_code_data=qr_code_data, networks=networks)
 
 if __name__ == '__main__':
     app.run(debug=True)
