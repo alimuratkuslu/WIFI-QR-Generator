@@ -5,4 +5,3 @@ __pycache__/
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 qr-generator-kp.pem
-architecture.png
