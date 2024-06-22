@@ -18,14 +18,14 @@
         <h2>WiFi QR Code Generator</h2>
         <form method="POST">
             {% if networks %}
-            <label for="ssid">Select SSID for Windows:</label>
+            <label for="ssid">Select WI-FI:</label>
             <select id="ssid" name="ssid" required>
                 {% for network in networks %}
                     <option value="{{ network }}">{{ network }}</option>
                 {% endfor %}
             </select>
             {% else %}
-            <label for="ssid">SSID:</label>
+            <label for="ssid">WI-FI Name:</label>
             <input type="text" id="ssid" name="ssid" required>
             {% endif %}
 
