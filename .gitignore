@@ -5,5 +5,3 @@ __pycache__/
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 qr-generator-kp.pem
-docker-compose.yml
-Dockerfile
