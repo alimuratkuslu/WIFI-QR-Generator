@@ -56,5 +56,5 @@ def index():
         qr_code_data = f"data:image/png;base64,{img_base64}"
     return render_template('index.html', qr_code_data=qr_code_data, networks=networks)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000)
