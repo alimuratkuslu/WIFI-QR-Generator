@@ -44,6 +44,8 @@ def get_wifi_networks():
 dynamodb = boto3.resource('dynamodb', region_name='eu-north-1')
 table = dynamodb.Table('qr-generator')
 
+s3_client = boto3.client('s3')
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     qr_code_data = None
@@ -52,6 +54,7 @@ def index():
         ssid = request.form['ssid']
         password = request.form['password']
         encryption = request.form['encryption']
+
         table.put_item(
             Item={
                 'wifiName': ssid,
@@ -64,6 +67,14 @@ def index():
         buffer = io.BytesIO()
         img.save(buffer, format='PNG')
         buffer.seek(0)
+
+        s3_client.put_object(
+            Bucket='qr-generator-images',
+            Key=f'{ssid}.png',
+            Body=buffer,
+            ContentType='image/png'
+        )
+
         img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
         qr_code_data = f"data:image/png;base64,{img_base64}"
     return render_template('index.html', qr_code_data=qr_code_data, networks=networks)
