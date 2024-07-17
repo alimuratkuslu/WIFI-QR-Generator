@@ -4,6 +4,7 @@ import io
 import base64
 import subprocess
 import platform
+import boto3
 
 app = Flask(__name__)
 
@@ -40,6 +41,9 @@ def get_wifi_networks():
         networks = None
     return networks
 
+dynamodb = boto3.resource('dynamodb', region_name='eu-north-1')
+table = dynamodb.Table('qr-generator')
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     qr_code_data = None
@@ -48,6 +52,14 @@ def index():
         ssid = request.form['ssid']
         password = request.form['password']
         encryption = request.form['encryption']
+        table.put_item(
+            Item={
+                'wifiName': ssid,
+                'password': password,
+                'encryption': encryption
+            }
+        )
+        
         img = create_wifi_qr(ssid, password, encryption)
         buffer = io.BytesIO()
         img.save(buffer, format='PNG')
